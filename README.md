@@ -33,7 +33,7 @@ Mapty is a modern workout tracking app that leverages geolocation to display liv
 
 - Clone the repository:
 
-git clone https://github.com/yourusername/mapty.git
+https://github.com/vincentkyalomusembi/Mapty-App.git
 
 # Navigate to the project folder:
 
