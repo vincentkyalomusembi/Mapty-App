@@ -77,8 +77,12 @@ class App {
   #workout = [];
 
   constructor() {
+    //Get user's position
     this._getPosition();
 
+    //Get data from local storage
+    this._getLocalStorage();
+    //Attach event handlers
     form.addEventListener('submit', this._newWorkout.bind(this));
 
     inputType.addEventListener('change', this._toggleElevationField);
@@ -104,14 +108,24 @@ class App {
     const coords = [latitude, longitude];
 
     this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
+    //openstreetmap view
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
+    // satelite view
+
+    // L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+    //   attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community'
+    // }).addTo(this.#map);
 
     //Handling click on map
     this.#map.on('click', this._showForm.bind(this));
+
+    this.#workout.forEach(work => {
+      this._renderWorkoutMarker(work);
+    });
   }
 
   _showForm(mapE) {
@@ -277,10 +291,29 @@ class App {
       },
     });
     //using the public interface
-    workout.click();
+    workoutEl.click();
   }
+  //local storage API
   _setLocalStorage() {
     localStorage.setItem('workout', JSON.stringify(this.#workout));
+  }
+
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workout'));
+    console.log(data);
+
+    if (!data) return;
+
+    this.#workout = data;
+
+    this.#workout.forEach(work => {
+      this._renderWorkout(work);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem('workout');
+    location.reload();
   }
 }
 
